@@ -11,10 +11,10 @@ export default (events: Event[], type: string, start: number, end: number) => {
     {
       type: "section",
       text: { type: "mrkdwn", text: `There are *${events.length}* ${type} events:` },
-      accessory: select,
+      accessory: select(type),
     },
     { type: "divider" },
     ...events_arr,
-    ...(events.length > 20 ? pagination(start, end) : []),
+    ...(events.length > 20 ? pagination(start, end, events.length) : []),
   ];
 };
