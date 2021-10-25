@@ -3,7 +3,7 @@
     "target": "es5",
     "module": "commonjs",
     "rootDir": "src",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "allowJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
