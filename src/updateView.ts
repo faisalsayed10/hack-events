@@ -7,6 +7,8 @@ import { Event } from "./types";
 
 export default async (type: string, client: WebClient, body: SlackAction, start: number, end: number) => {
   try {
+    const { user } = await client.users.info({ user: body.user.id });
+
     if (type === "upcoming") {
       const { data } = await axios.get<Event[]>(`https://events.hackclub.com/api/events/${type}`);
       const events = data.filter((event) => dayjs(event.start) > dayjs());
@@ -15,7 +17,7 @@ export default async (type: string, client: WebClient, body: SlackAction, start:
         view_id: (body as any).view.id,
         view: {
           type: "home",
-          blocks: eventsList(events, "upcoming", start, end),
+          blocks: eventsList(events, "upcoming", start, end, user.tz),
         },
       });
     } else if (type === "all") {
@@ -25,7 +27,7 @@ export default async (type: string, client: WebClient, body: SlackAction, start:
         view_id: (body as any).view.id,
         view: {
           type: "home",
-          blocks: eventsList(data, "total", start, end),
+          blocks: eventsList(data, "total", start, end, user.tz),
         },
       });
     } else if (type === "amas") {
@@ -34,7 +36,7 @@ export default async (type: string, client: WebClient, body: SlackAction, start:
         view_id: (body as any).view.id,
         view: {
           type: "home",
-          blocks: eventsList(data, "ama", start, end),
+          blocks: eventsList(data, "ama", start, end, user.tz),
         },
       });
     }
