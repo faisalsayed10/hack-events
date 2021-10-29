@@ -49,7 +49,7 @@ export default (event: Event, tz: string) => [
             },
             {
               type: "button",
-              text: { type: "plain_text", emoji: true, text: "Ping me (Coming Soon)" },
+              text: { type: "plain_text", emoji: true, text: ":happy_ping_sock: Ping me" },
               action_id: "ping-me",
               value: dayjs(event.start),
             },
