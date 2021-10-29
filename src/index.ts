@@ -8,7 +8,7 @@ import Stump from "stump.js";
 import eventsList from "./blocks/events-list";
 import { Event } from "./types";
 import updateView from "./updateView";
-import express from 'express';
+import express from "express";
 
 require("dotenv").config();
 
@@ -66,7 +66,7 @@ app.action("select_event", async ({ ack, body, client }) => {
   await updateView(event_type, client, body, 0, 20);
 });
 
-app.action("ping-me", async ({ ack, body }) => {
+app.action("ping-me", async ({ ack, body, client }) => {
   await ack();
   const start_time: string = (body as any).actions[0].value;
   const line = `${body.user.id} ${start_time}`;
@@ -76,6 +76,11 @@ app.action("ping-me", async ({ ack, body }) => {
   }
 
   fs.appendFileSync(ping, `${line}\n`);
+
+  await client.chat.postMessage({
+    channel: body.user.id,
+    text: "You will be pinged when the event starts!",
+  });
 });
 
 app.action("cal", async ({ ack }) => await ack());
