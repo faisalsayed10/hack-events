@@ -8,11 +8,13 @@ import Stump from "stump.js";
 import eventsList from "./blocks/events-list";
 import { Event } from "./types";
 import updateView from "./updateView";
+import express from 'express';
 
 require("dotenv").config();
 
 const ping = path.join(__dirname, "../pings.txt");
 const PORT = parseInt(process.env.PORT || "5000");
+const expressApp = express();
 const stump = new Stump(["Debug", "Timestamp"]);
 
 const app = new App({
@@ -21,6 +23,8 @@ const app = new App({
   socketMode: true,
   appToken: process.env.SLACK_APP_TOKEN,
 });
+
+expressApp.get("/", (req, res) => res.send("Hack Events"));
 
 cron.schedule("* * * * *", async () => {
   const lines = fs.readFileSync(ping, "utf8").split("\n");
@@ -95,7 +99,7 @@ app.action("next", async ({ ack, body, client }) => {
   await updateView(selected_option, client, body, end, end + 20);
 });
 
-(async () => {
+expressApp.listen(PORT, async () => {
   await app.start(PORT);
   stump.info("⚡️ Bolt app is running!");
-})();
+});
