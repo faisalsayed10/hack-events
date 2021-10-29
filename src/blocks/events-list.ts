@@ -3,9 +3,9 @@ import eventBlock from "./eventBlock";
 import pagination from "./pagination";
 import select from "./select";
 
-export default (events: Event[], type: string, start: number, end: number) => {
+export default (events: Event[], type: string, start: number, end: number, tz: string) => {
   const events_arr = [];
-  events.slice(start, end).forEach((event) => events_arr.push(...eventBlock(event)));
+  events.slice(start, end).forEach((event) => events_arr.push(...eventBlock(event, tz)));
 
   return [
     {
