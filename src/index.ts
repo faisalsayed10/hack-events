@@ -2,7 +2,7 @@ import { App } from "@slack/bolt";
 import axios from "axios";
 import dayjs from "dayjs";
 import fs from "fs";
-import cron from 'node-cron';
+import cron from "node-cron";
 import path from "path";
 import Stump from "stump.js";
 import eventsList from "./blocks/events-list";
@@ -11,29 +11,30 @@ import updateView from "./updateView";
 
 require("dotenv").config();
 
+const ping = path.join(__dirname, "../pings.txt");
 const PORT = parseInt(process.env.PORT || "5000");
 const stump = new Stump(["Debug", "Timestamp"]);
+
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   socketMode: true,
   appToken: process.env.SLACK_APP_TOKEN,
 });
-const ping = path.join(__dirname, "../pings.txt");
 
 cron.schedule("* * * * *", async () => {
   const lines = fs.readFileSync(ping, "utf8").split("\n");
-  
+
   lines.forEach(async (line) => {
     const [user, date] = line.split(" ");
 
-    if (dayjs().diff(dayjs(date), 'minutes') === 5) {
+    if (dayjs().diff(dayjs(date), "minutes") === 5) {
       await app.client.chat.postMessage({
         channel: user,
         text: "An event is starting soon!" + "\n" + "imo you should join ASAP!",
       });
     }
-  })
+  });
 });
 
 app.event("app_home_opened", async ({ event, client }) => {
